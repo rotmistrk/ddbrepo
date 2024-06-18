@@ -2,7 +2,7 @@ package ddbrepo
 
 import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	"github.com/rotmistrk/secrets/lib/must"
+	"github.com/rotmistrk/must"
 	"reflect"
 	"testing"
 	"time"
