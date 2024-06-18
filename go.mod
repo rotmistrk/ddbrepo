@@ -1,4 +1,4 @@
-module github.org/rotmistrk/ddbrepo
+module github.com/rotmistrk/ddbrepo
 
 go 1.21
 
