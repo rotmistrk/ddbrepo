@@ -12,9 +12,10 @@ type mockTwoKeyStruct struct {
 	MyId        string    `ddb:"id,hash-key"`
 	MyTimestamp time.Time `ddb:"tstamp,range-key"`
 	MyValue     string
-	ExpireOn    time.Time `ddb:"expireOn,expire"`
-	AltHash     string    `ddb:"altKey" ddb-gsi:"alt hash-key"`
-	AltRange    string    `ddb-gsi:"alt range-key"`
+	Version     int64  `ddb:",version"`
+	ExpireOn    int64  `ddb:"expireOn,expire"`
+	AltHash     string `ddb:"altKey" ddb-gsi:"alt hash-key"`
+	AltRange    string `ddb-gsi:"alt range-key"`
 }
 
 type mockDdbApi struct {
@@ -145,6 +146,7 @@ func TestNew(t *testing.T) {
 				readCapacityUnitsConfig:  DefaultReadCapacityUnits,
 				writeCapacityUnitsConfig: DefaultWriteCapacityUnits,
 				ttlColumn:                "expireOn",
+				versionColumn:            "version",
 				keySchema: []types.KeySchemaElement{
 					{
 						AttributeName: aws.String("id"),

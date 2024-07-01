@@ -98,6 +98,7 @@ func newFieldSpec(props parseProps, field *reflect.StructField) (*fieldSpec, err
 	} else if props.LowercaseUntaggedFields() && len(spec.name) > 0 {
 		spec.name = mangleName(spec)
 	}
+
 	return spec, nil
 }
 

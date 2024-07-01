@@ -44,6 +44,10 @@ type DdbRepo[RecordType any] struct {
 	gsi                      map[string]types.GlobalSecondaryIndex
 }
 
+func (repo DdbRepo[RecordType]) ExpirationFieldName() (string, bool) {
+	return repo.ttlColumn, repo.ttlColumn != ""
+}
+
 func (repo *DdbRepo[T]) VersionFieldName() (string, error) {
 	return repo.versionColumn, nil
 }

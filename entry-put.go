@@ -7,11 +7,13 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"time"
 )
 
 type PutWorkflowColumns interface {
 	HashKeyName() (string, error)
 	VersionFieldName() (string, error)
+	ExpirationFieldName() (string, bool)
 }
 
 type PutItemOp func(
@@ -36,6 +38,22 @@ func Insert(repo PutWorkflowColumns, entry map[string]types.AttributeValue) (str
 		return "", nil, err
 	} else {
 		return AttributeNotExists(keyName), nil, nil
+	}
+}
+
+func InsertOrReplaceExpired(repo PutWorkflowColumns, entry map[string]types.AttributeValue) (string, map[string]types.AttributeValue, error) {
+	if keyName, err := repo.HashKeyName(); err != nil {
+		return "", nil, err
+	} else {
+		cond := AttributeNotExists(keyName)
+		values := make(map[string]types.AttributeValue)
+		if expname, ok := repo.ExpirationFieldName(); ok {
+			cond += fmt.Sprintf(" or (%v < :%v)", expname, expname)
+			values[":"+expname] = &types.AttributeValueMemberN{
+				Value: fmt.Sprintf("%v", time.Now().Unix()),
+			}
+		}
+		return cond, values, nil
 	}
 }
 
