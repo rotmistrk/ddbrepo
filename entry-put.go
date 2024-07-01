@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"strconv"
 	"time"
 )
 
@@ -71,14 +72,34 @@ func IsNextVersion(repo PutWorkflowColumns, entry map[string]types.AttributeValu
 	} else if vers == "" {
 		return "", nil, errors.New("no version column defined")
 	} else if value, found := entry[vers]; found {
+		value, err = incrementNumericValueBy(value, 1)
+		if err != nil {
+			return "", nil, err
+		}
 		param := map[string]types.AttributeValue{
 			":" + vers: value,
 		}
-		cond := fmt.Sprintf("%v + 1 = :%v", vers, vers)
+		cond := fmt.Sprintf("%v = :%v", vers, vers)
 		return cond, param, nil
 	} else {
 		return "", nil, fmt.Errorf("failed to find column %v value as next version", vers)
 	}
+}
+
+func incrementNumericValueBy(value types.AttributeValue, increment int) (types.AttributeValue, error) {
+	switch v := value.(type) {
+	case *types.AttributeValueMemberN:
+		if v1, err := strconv.Atoi(v.Value); err != nil {
+			return nil, err
+		} else {
+			value = &types.AttributeValueMemberN{
+				Value: fmt.Sprint(v1 + increment),
+			}
+		}
+	default:
+		return nil, fmt.Errorf("invalid version type %T", value)
+	}
+	return value, nil
 }
 
 func (repo DdbRepo[RecordType]) PutItemOp(entry *RecordType, op PutItemOp) error {

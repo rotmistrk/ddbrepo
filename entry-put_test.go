@@ -155,10 +155,10 @@ func TestOpForPut(t *testing.T) {
 				},
 				op: IsNextVersion,
 			},
-			want: "version + 1 = :version",
+			want: "version = :version",
 			param: map[string]types.AttributeValue{
 				":version": &types.AttributeValueMemberN{
-					Value: "2",
+					Value: "3",
 				},
 			},
 			wantErr: false,
