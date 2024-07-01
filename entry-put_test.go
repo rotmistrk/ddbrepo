@@ -158,7 +158,7 @@ func TestOpForPut(t *testing.T) {
 			want: "version = :version",
 			param: map[string]types.AttributeValue{
 				":version": &types.AttributeValueMemberN{
-					Value: "3",
+					Value: "1",
 				},
 			},
 			wantErr: false,

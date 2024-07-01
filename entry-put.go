@@ -72,7 +72,7 @@ func IsNextVersion(repo PutWorkflowColumns, entry map[string]types.AttributeValu
 	} else if vers == "" {
 		return "", nil, errors.New("no version column defined")
 	} else if value, found := entry[vers]; found {
-		value, err = incrementNumericValueBy(value, 1)
+		value, err = incrementNumericValueBy(value, -1)
 		if err != nil {
 			return "", nil, err
 		}
