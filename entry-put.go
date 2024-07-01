@@ -67,12 +67,20 @@ func Update(repo PutWorkflowColumns, entry map[string]types.AttributeValue) (str
 }
 
 func IsNextVersion(repo PutWorkflowColumns, entry map[string]types.AttributeValue) (string, map[string]types.AttributeValue, error) {
+	return isVersionIncr(repo, entry, 1)
+}
+
+func IsSameVersion(repo PutWorkflowColumns, entry map[string]types.AttributeValue) (string, map[string]types.AttributeValue, error) {
+	return isVersionIncr(repo, entry, 0)
+}
+
+func isVersionIncr(repo PutWorkflowColumns, entry map[string]types.AttributeValue, incr int) (string, map[string]types.AttributeValue, error) {
 	if vers, err := repo.VersionFieldName(); err != nil {
 		return "", nil, err
 	} else if vers == "" {
 		return "", nil, errors.New("no version column defined")
 	} else if value, found := entry[vers]; found {
-		value, err = incrementNumericValueBy(value, -1)
+		value, err = incrementNumericValueBy(value, -incr)
 		if err != nil {
 			return "", nil, err
 		}
