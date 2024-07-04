@@ -32,6 +32,10 @@ func IncludeKey(spec fieldSpec) bool {
 	return spec.IsKey()
 }
 
+func IncludeHashKey(spec fieldSpec) bool {
+	return spec.IsHashKey()
+}
+
 func IncludeVersion(spec fieldSpec) bool {
 	return spec.IsVersionField()
 }
