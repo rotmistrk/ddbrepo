@@ -8,7 +8,7 @@ import (
 
 type QueryOption func(query *dynamodb.QueryInput)
 
-func QueryHkCbk[R any](repo *DdbRepo[R], callback func(r *R) error, source R, condition ...QueryOption) error {
+func QueryHkCbk[R any](repo *DdbRepo[R], callback func(r *R) error, source *R, condition ...QueryOption) error {
 	hashKeyName, err := repo.HashKeyName()
 	if err != nil {
 		return err
