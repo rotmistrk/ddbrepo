@@ -34,9 +34,11 @@ func TestIncludeAll(t *testing.T) {
 	}
 }
 
+type KeyType string
+
 type samplteStruct struct {
-	Key    string `ddb:"hkey, hash-key"`
-	Range  string `ddb:"rkey, range-key"`
+	Key    KeyType `ddb:"hkey, hash-key"`
+	Range  string  `ddb:"rkey, range-key"`
 	Value  string
 	Expire time.Time `ddb:"expire, expire"`
 }

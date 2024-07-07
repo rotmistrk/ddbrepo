@@ -196,7 +196,16 @@ func attributeDefinition(spec *fieldSpec, fieldValue reflect.Value) (types.Attri
 	case []byte:
 		ret.AttributeType = types.ScalarAttributeTypeB
 	default:
-		return ret, errors.New(fmt.Sprintf("type %t is not supported as key for field %v", fieldValue.Interface(), spec.name))
+		switch fieldValue.Kind() {
+		case reflect.String:
+			ret.AttributeType = types.ScalarAttributeTypeS
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+			reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
+			reflect.Float32, reflect.Float64:
+			ret.AttributeType = types.ScalarAttributeTypeN
+		default:
+			return ret, errors.New(fmt.Sprintf("type %t is not supported as key for field %v", fieldValue.Interface(), spec.name))
+		}
 	}
 	return ret, nil
 }

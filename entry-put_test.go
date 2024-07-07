@@ -57,12 +57,14 @@ func TestAttributeNotExists(t *testing.T) {
 	}
 }
 
+type PartType int
+
 type sampleRecord struct {
-	ID       string `ddb:",hash-key"`
-	Part     int    `ddb:",range-key"`
-	Version  int    `ddb:"version,version"`
-	Name     string `ddb:"name"`
-	ExpireOn int64  `ddb:",expire"`
+	ID       string   `ddb:",hash-key"`
+	Part     PartType `ddb:",range-key"`
+	Version  int      `ddb:"version,version"`
+	Name     string   `ddb:"name"`
+	ExpireOn int64    `ddb:",expire"`
 }
 
 func TestOpForPut(t *testing.T) {

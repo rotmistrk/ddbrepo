@@ -8,9 +8,11 @@ import (
 	"time"
 )
 
+type CountType int
+
 type mockUnmarshalStruct struct {
 	Name    string
-	Count   int
+	Count   CountType
 	Numbers map[string]float64
 	Expire  time.Time `ddb:"expire, expire"`
 }

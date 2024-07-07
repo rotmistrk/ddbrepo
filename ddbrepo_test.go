@@ -8,14 +8,17 @@ import (
 	"time"
 )
 
+type IdType string
+type VersionType int64
+
 type mockTwoKeyStruct struct {
-	MyId        string    `ddb:"id,hash-key"`
+	MyId        IdType    `ddb:"id,hash-key"`
 	MyTimestamp time.Time `ddb:"tstamp,range-key"`
 	MyValue     string
-	Version     int64  `ddb:",version"`
-	ExpireOn    int64  `ddb:"expireOn,expire"`
-	AltHash     string `ddb:"altKey" ddb-gsi:"alt hash-key"`
-	AltRange    string `ddb-gsi:"alt range-key"`
+	Version     VersionType `ddb:",version"`
+	ExpireOn    int64       `ddb:"expireOn,expire"`
+	AltHash     string      `ddb:"altKey" ddb-gsi:"alt hash-key"`
+	AltRange    string      `ddb-gsi:"alt range-key"`
 }
 
 type mockDdbApi struct {
