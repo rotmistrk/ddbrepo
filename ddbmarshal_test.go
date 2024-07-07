@@ -1,6 +1,7 @@
 package ddbrepo
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
@@ -40,6 +41,7 @@ type samplteStruct struct {
 	Key    KeyType `ddb:"hkey, hash-key"`
 	Range  string  `ddb:"rkey, range-key"`
 	Value  string
+	Array  []string
 	Expire time.Time `ddb:"expire, expire"`
 }
 
@@ -80,6 +82,29 @@ func TestMarshalTagFilter(t *testing.T) {
 				"hkey":   getAv("key"),
 				"rkey":   getAv("range"),
 				"value":  getAv("value"),
+				"array":  getAv([]string(nil)),
+				"expire": getAv(when),
+			},
+			wantErr: false,
+		},
+		{
+			name: "with array",
+			args: args{
+				props: &props{true, true},
+				source: &samplteStruct{
+					Key:    "key",
+					Range:  "range",
+					Value:  "value",
+					Array:  []string{"one", "two", "three"},
+					Expire: when,
+				},
+				filter: IncludeAll,
+			},
+			wantResult: map[string]types.AttributeValue{
+				"hkey":   getAv("key"),
+				"rkey":   getAv("range"),
+				"value":  getAv("value"),
+				"array":  getAv([]string{"one", "two", "three"}),
 				"expire": getAv(when),
 			},
 			wantErr: false,
@@ -93,7 +118,10 @@ func TestMarshalTagFilter(t *testing.T) {
 				return
 			}
 			if !reflect.DeepEqual(gotResult, tt.wantResult) {
-				t.Errorf("MarshalTagFilter() gotResult = %v, want %v", gotResult, tt.wantResult)
+				t.Errorf("MarshalTagFilter()\ngotResult = %v,\nwant %v",
+					string(must.Must(json.Marshal(gotResult))),
+					string(must.Must(json.Marshal(tt.wantResult))),
+				)
 			}
 			fmt.Println(JsonPretty(&gotResult, "| ", "  "))
 		})
