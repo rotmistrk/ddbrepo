@@ -10,7 +10,7 @@ import (
 const (
 	TagDdb          = "ddb"
 	TagDdbGsi       = "ddb-gsi"
-	TagItemHashJey  = "hash-key"
+	TagItemHashKey  = "hash-key"
 	TagItemRangeKey = "range-key"
 	TagItemRequired = "required"
 	TagItemTtlField = "expire"
@@ -60,7 +60,7 @@ func newFieldSpec(props parseProps, field *reflect.StructField) (*fieldSpec, err
 			switch parts[1] {
 			case TagItemRangeKey:
 				spec.gsiHash[parts[0]] = false
-			case TagItemHashJey:
+			case TagItemHashKey:
 				spec.gsiHash[parts[0]] = true
 			default:
 				return nil, fmt.Errorf("unexpected key type in %v on %v for field %v", v, TagDdbGsi, field.Name)
@@ -76,7 +76,7 @@ func newFieldSpec(props parseProps, field *reflect.StructField) (*fieldSpec, err
 			switch strings.TrimSpace(v) {
 			case TagItemRequired:
 				spec.required = true
-			case TagItemHashJey:
+			case TagItemHashKey:
 				spec.isHashKey = true
 			case TagItemRangeKey:
 				spec.isRangeKey = true
@@ -91,7 +91,7 @@ func newFieldSpec(props parseProps, field *reflect.StructField) (*fieldSpec, err
 			}
 		}
 		if spec.isRangeKey && spec.isHashKey {
-			return nil, errors.New("both " + TagItemHashJey + " and " + TagItemRangeKey + " are set for " + field.Name)
+			return nil, errors.New("both " + TagItemHashKey + " and " + TagItemRangeKey + " are set for " + field.Name)
 		}
 	} else if !props.AllowUntaggedFields() {
 		return nil, nil

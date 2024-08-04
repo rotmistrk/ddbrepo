@@ -17,6 +17,7 @@ type mockTwoKeyStruct struct {
 	MyValue     string
 	Version     VersionType `ddb:",version"`
 	ExpireOn    int64       `ddb:"expireOn,expire"`
+	Ignored     int32       `ddb:"ignore,ignore"`
 	AltHash     string      `ddb:"altKey" ddb-gsi:"alt hash-key"`
 	AltRange    string      `ddb-gsi:"alt range-key"`
 }

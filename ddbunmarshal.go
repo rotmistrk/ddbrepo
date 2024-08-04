@@ -19,11 +19,13 @@ func makeUnmarshalCallback(props parseProps, target interface{}, item map[string
 	return func(pos int, field *reflect.StructField, value *reflect.Value) error {
 		if spec, err := newFieldSpec(props, field); err != nil {
 			return err
-		} else if mapEntry, found := item[spec.name]; found {
-			// dest := value.Interface()
-			destination := value.Addr().Interface()
-			if err := attributevalue.Unmarshal(mapEntry, destination); err != nil {
-				return err
+		} else if spec != nil {
+			if mapEntry, found := item[spec.name]; found {
+				// dest := value.Interface()
+				destination := value.Addr().Interface()
+				if err := attributevalue.Unmarshal(mapEntry, destination); err != nil {
+					return err
+				}
 			}
 		}
 		return nil

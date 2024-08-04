@@ -94,6 +94,8 @@ func New[T any]() (repo *DdbRepo[T], err error) {
 		fieldValue := value.Field(i)
 		if spec, err := newFieldSpec(repo, &fieldType); err != nil {
 			return nil, err
+		} else if spec == nil {
+			// ignore
 		} else {
 			if spec.IsKey() {
 				if def, err := attributeDefinition(spec, fieldValue); err != nil {
